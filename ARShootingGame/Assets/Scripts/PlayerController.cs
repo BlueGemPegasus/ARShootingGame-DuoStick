@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private PlayerInput playerInput;
+
+    // Player Movement Main
     [SerializeField] private CharacterController controller;
     [SerializeField] private Vector3 playerVelocity;
     [SerializeField] private float playerSpeed = 2.0f;
@@ -12,13 +15,25 @@ public class PlayerController : MonoBehaviour
     // This two Value is to ensure player stick to the ground. 
     // Due to there is no Rigidbody used, manually adding gravity is needed
     private bool groundedPlayer;
-    private float gravityValue = -9.81f;
+    [SerializeField] private float gravityValue = -9.81f;
+
+    // Player Aim and Shoot
+    public GameObject bulletPrefab;
+    public Transform firePoint;
+
+    // Player's Information
+    public Text text_Name;
+    public Text text_KillCount;
 
     private void Awake()
     {
         playerInput = new PlayerInput();
+
         controller = GetComponent<CharacterController>();
 
+        //GetComponent<Renderer>().material.color = playerColor;
+        //text_Name.text = playerName;
+        
     }
 
     private void OnEnable()
@@ -32,6 +47,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+
         groundedPlayer = controller.isGrounded;
         if (groundedPlayer && playerVelocity.y < 0)
         {
@@ -51,4 +67,5 @@ public class PlayerController : MonoBehaviour
         controller.Move(playerVelocity * Time.deltaTime);
 
     }
+
 }

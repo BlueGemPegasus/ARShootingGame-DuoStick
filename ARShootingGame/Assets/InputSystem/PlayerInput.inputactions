@@ -101,52 +101,6 @@
                     "isPartOfComposite": true
                 }
             ]
-        },
-        {
-            "name": "Touch",
-            "id": "dc8624ec-0c20-4311-b291-16f7ecfd3f2d",
-            "actions": [
-                {
-                    "name": "TouchPress",
-                    "type": "Button",
-                    "id": "1089cc18-4f9a-471e-acd7-95b3486d0acb",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
-                    "name": "TouchPosition",
-                    "type": "PassThrough",
-                    "id": "34e1b0c4-2e56-414b-a330-7855833d24a6",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": ""
-                }
-            ],
-            "bindings": [
-                {
-                    "name": "",
-                    "id": "bde30dce-9c9a-4621-9b80-57aaab7e4135",
-                    "path": "<Touchscreen>/primaryTouch/tap",
-                    "interactions": "Press",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TouchPress",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "4c9474ad-b6d0-4940-aa73-87777584fe06",
-                    "path": "<Touchscreen>/position",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TouchPosition",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                }
-            ]
         }
     ],
     "controlSchemes": []

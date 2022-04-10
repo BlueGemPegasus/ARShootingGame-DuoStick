@@ -730,6 +730,7 @@ MonoBehaviour:
   GhostArena: {fileID: 1489677373236588966}
   Arena: {fileID: 9213063154868380187, guid: 1637ad7dc0d3a114d8f0178bfa16a8d6, type: 3}
   _btnPlaceArena: {fileID: 0}
+  JoySticks: {fileID: 0}
 --- !u!114 &1087240200
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -920,7 +921,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1743707475
 GameObject:
@@ -1844,7 +1845,7 @@ Transform:
   - {fileID: 1489677373075363343}
   - {fileID: 1489677372652385838}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &1489677373247318736
 MeshRenderer:
