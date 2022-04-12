@@ -1673,8 +1673,8 @@ MonoBehaviour:
   SyncScaleY: 1
   SyncScaleZ: 1
   PositionThreshold: 0.001
-  RotAngleThreshold: 0.01
-  ScaleThreshold: 0.01
+  RotAngleThreshold: 0.001
+  ScaleThreshold: 0.001
   InLocalSpace: 0
   Interpolate: 1
 --- !u!1 &9213063154940500079

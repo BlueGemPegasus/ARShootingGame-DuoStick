@@ -23,7 +23,9 @@ public class Bullet : MonoBehaviour
         Respawn _respawn = collision.gameObject.GetComponent<Respawn>();
         if (_respawn != null)
         {
-            Debug.Log("HIT PLAYER!");
+            owner.score += 1;
+            _respawn.Life -= 1;
+            _respawn.Respawning();
             Destroy(this.gameObject);
         }
         if (collision.gameObject.CompareTag("Arena"))

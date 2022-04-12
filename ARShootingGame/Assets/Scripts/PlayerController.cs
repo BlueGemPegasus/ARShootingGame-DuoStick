@@ -32,8 +32,10 @@ public class PlayerController : NetworkBehaviour
     // Player's Information
     public Text text_Name;
     public Text text_KillCount;
+    public int score = 0;
+    public ulong clientId;
 
-   
+
     private void Awake()
     {
         playerInput = new PlayerInput();
@@ -50,9 +52,8 @@ public class PlayerController : NetworkBehaviour
         {
             controller = GetComponent<CharacterController>();
             AimLine = GetComponent<LineRenderer>();
-
             AimLine.enabled = false;
-            
+            text_KillCount = GameObject.Find("txt_KillCount").GetComponent<Text>();
         }
     }
 
@@ -71,6 +72,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsLocalPlayer)
         {
+            clientId = NetworkManager.Singleton.LocalClientId;
             Movement();
             Aiming();
             AimLine.enabled = true;
@@ -79,6 +81,13 @@ public class PlayerController : NetworkBehaviour
             if(AimHit.collider)
             {
                 AimLine.SetPosition(1, AimHit.point);
+            }
+
+            text_KillCount.text = "Kill Count : " + score.ToString(); 
+
+            if (score == 10)
+            {
+                // End of Game
             }
         }
         //Debug.DrawRay(firePoint.position, transform.forward * 50, Color.blue) ;
@@ -147,6 +156,7 @@ public class PlayerController : NetworkBehaviour
     private void ShootClientRPC()
     {       
         var BulletShoot = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+        BulletShoot.GetComponent<Bullet>().owner = this;
         if (Physics.Raycast(firePoint.position, firePoint.forward * 50, out RaycastHit AimHit, 50f))
         {
             BulletShoot.transform.position = AimHit.point;
