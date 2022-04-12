@@ -4,26 +4,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
+using UnityEngine.UI;
+using Unity.Netcode;
 
 [RequireComponent(typeof(ARRaycastManager))]
-public class PlaceArena : MonoBehaviour
+public class PlaceArena : NetworkBehaviour
 {
-    // Component //
+    // Component
     private ARRaycastManager _arRaycastManager;
     private Pose placementPose;
     private bool placementPoseIsValid = false;
+    ARPlaneManager _arPlaneManager;
 
-    // This is the Placement Indicator //
+    // This is the Placement Indicator
     public GameObject GhostArena;
 
     // The Arena to replace GhostArena, and start the game.
     public GameObject Arena;
 
+    // UI Stuff
     public GameObject _btnPlaceArena;
     public GameObject JoySticks;
 
     // If Arena is placed, this set to true, GhostArena will be hidden from sight, so is Plane Scanner
     bool ArenaPlaced = false;
+
+    // Networking Stuff
+    private ulong clientId;
+    public GameObject PlayerPrefab;
+    bool Spawned = false;
 
     private void Awake()
     {
@@ -31,20 +40,70 @@ public class PlaceArena : MonoBehaviour
         _arRaycastManager = GetComponent<ARRaycastManager>();
         _btnPlaceArena = GameObject.Find("Btn_PlaceArena");
         JoySticks = GameObject.Find("JoySticks");
+        _arPlaneManager = FindObjectOfType<ARPlaneManager>();
 
         // First Hide The Ghost Arena
         GhostArena.SetActive(false);
-        _btnPlaceArena.SetActive(false);
+        _btnPlaceArena.GetComponent<Button>().interactable = false;
         JoySticks.SetActive(false);
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        if (!IsHost)
+        {
+            _arPlaneManager.enabled = !_arPlaneManager.enabled;
+        }
+
+        clientId = NetworkManager.Singleton.LocalClientId;
     }
 
     private void Update()
     {
         if (!ArenaPlaced)
         {
-            UpdatePlacementIndicator();
-            UpdatePlacementPose();
+            if (IsHost)
+            {
+                UpdatePlacementIndicator();
+                UpdatePlacementPose();
+            }
+            else if (!IsHost)
+            {
+                _btnPlaceArena.GetComponentInChildren<Text>().text = "Please Wait...";
+            }
         }
+        else if (ArenaPlaced && Spawned)
+        {
+            return;
+        }
+        else if (ArenaPlaced)
+        {
+            JoySticks.SetActive(true);
+            _btnPlaceArena.SetActive(false);
+            if (Spawned == false)
+                InitiateGettingClientAndSpawning();
+        }
+
+    }
+
+    private void InitiateGettingClientAndSpawning()
+    {
+        if (IsHost)
+        {
+            Transform SpawnPoint = GameObject.Find("PlayerSpawn01").GetComponent<Transform>();
+            GameObject HostPlayer = Instantiate(PlayerPrefab, SpawnPoint.position, Quaternion.identity);
+            HostPlayer.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
+            Spawned = true;
+        }
+        else if (IsClient)
+        {
+            Transform SpawnPoint = GameObject.Find("PlayerSpawn02").GetComponent<Transform>();
+            GameObject HostPlayer = Instantiate(PlayerPrefab, SpawnPoint.position, Quaternion.identity);
+            HostPlayer.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
+            Spawned = true;
+        }
+        return;
+       
     }
 
     private void UpdatePlacementIndicator()
@@ -53,12 +112,12 @@ public class PlaceArena : MonoBehaviour
         {
             GhostArena.SetActive(true);
             GhostArena.transform.SetPositionAndRotation(placementPose.position, placementPose.rotation);
-            _btnPlaceArena.SetActive(true);
+            _btnPlaceArena.GetComponent<Button>().interactable = true;
         }
         else
         {
             GhostArena.SetActive(false);
-            _btnPlaceArena.SetActive(false);
+            _btnPlaceArena.GetComponent<Button>().interactable = false;
         }
     }
 
@@ -87,15 +146,16 @@ public class PlaceArena : MonoBehaviour
     public void PlacingArena()
     {
         ArenaPlaced = true;
-        Instantiate(Arena, GhostArena.transform.position, GhostArena.transform.rotation);
+        GameObject NewArena = Instantiate(Arena, GhostArena.transform.position, GhostArena.transform.rotation);
+        NewArena.GetComponent<NetworkObject>().Spawn();
         GhostArena.SetActive(false);
-        ARPlaneManager _arPlaneManager = FindObjectOfType<ARPlaneManager>();
         foreach (var plane in _arPlaneManager.trackables)
         {
             plane.gameObject.SetActive(false);
         }
         _arPlaneManager.enabled = !_arPlaneManager.enabled;
-        _btnPlaceArena.SetActive(false);
-        JoySticks.SetActive(true);
+
+        // After placing the Arena, begin getting ID, and spawning character on the Arena's Spawnpoint.
+        
     }
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.UI;
 
+
 public class MenuScripts : MonoBehaviour
 {
     public GameObject menuPanel;
@@ -23,7 +24,7 @@ public class MenuScripts : MonoBehaviour
 
     public void Host()
     {
-        if (Input_Name != null)
+        if (Input_Name.text != null || Input_Name.text != " ")
         {
             PlayerPrefs.SetString("PlayerName", Input_Name.ToString());
             NetworkManager.Singleton.StartHost();
@@ -37,7 +38,7 @@ public class MenuScripts : MonoBehaviour
 
     public void Join()
     {
-        if (Input_Name != null)
+        if (Input_Name.text != null || Input_Name.text != " " )
         {
             PlayerPrefs.SetString("PlayerName", Input_Name.ToString());
             NetworkManager.Singleton.StartClient();
