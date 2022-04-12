@@ -8,6 +8,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameScene.unity
     guid: 041e0b756d45a6a40b4dd622c3904481
+  - enabled: 1
+    path: Assets/Scenes/DemoWithoutAR.unity
+    guid: 1bdad2b10da8ad64688b6eac8843c114
+  - enabled: 1
+    path: Assets/Scenes/-Relearn.unity
+    guid: b92555f112d9aba4ab9a3eaa9fa2153b
   m_configObjects:
     Unity.XR.WindowsMR.Settings: {fileID: 11400000, guid: 744b813df90924c169af73489b8325de,
       type: 2}

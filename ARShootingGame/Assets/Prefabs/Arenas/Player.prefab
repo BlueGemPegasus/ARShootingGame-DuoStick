@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2884883158344964406}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.583, y: 0.064, z: 0.804}
+  m_LocalPosition: {x: 0.5, y: 0.065, z: 0.85}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7824940783808175752}
@@ -300,8 +300,8 @@ GameObject:
   - component: {fileID: 7824940783808175752}
   - component: {fileID: 7824940783808175753}
   - component: {fileID: 7824940783808175751}
-  - component: {fileID: 1644236632425986920}
-  - component: {fileID: 7817884331717594236}
+  - component: {fileID: 8728531343361470013}
+  - component: {fileID: -104971526412214128}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -318,7 +318,7 @@ Transform:
   m_GameObject: {fileID: 7824940783808175754}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.0158, z: 0}
-  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7824940783258709474}
   - {fileID: 7824940784875316997}
@@ -357,11 +357,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 175b103d0d4fc1f4fb7caafa759a122d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Position:
+    m_InternalValue: {x: 0, y: 0, z: 0}
   controller: {fileID: 0}
   playerVelocity: {x: 0, y: 0, z: 0}
   playerSpeed: 0.08
+  rotateSpeed: 5
+  cDZ: 0.1
   gravityValue: -9.81
---- !u!114 &1644236632425986920
+  bulletPrefab: {fileID: 2832833492568727224, guid: ca4ab054a9bb2d842b2adb32fb875aa0,
+    type: 3}
+  firePoint: {fileID: 6377273791217014261}
+  text_Name: {fileID: 0}
+  text_KillCount: {fileID: 0}
+--- !u!114 &8728531343361470013
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -370,31 +379,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 7824940783808175754}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8258ea15b8f74c4889ce485d21cbbb1, type: 3}
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SceneId:
-    m_Value: 0
-  m_AssetId:
-    i0: 0
-    i1: 0
-    i2: 0
-    i3: 0
-    i4: 0
-    i5: 0
-    i6: 0
-    i7: 0
-    i8: 0
-    i9: 0
-    i10: 0
-    i11: 0
-    i12: 0
-    i13: 0
-    i14: 0
-    i15: 0
-  m_ServerOnly: 0
-  m_LocalPlayerAuthority: 0
---- !u!114 &7817884331717594236
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+--- !u!114 &-104971526412214128
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -403,19 +395,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 7824940783808175754}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 13d6c522af31447398568cc65334232b, type: 3}
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TransformSyncMode: 1
-  m_SendInterval: 0.1
-  m_SyncRotationAxis: 7
-  m_RotationSyncCompression: 0
-  m_SyncSpin: 0
-  m_MovementTheshold: 0.001
-  m_VelocityThreshold: 0.0001
-  m_SnapThreshold: 5
-  m_InterpolateRotation: 1
-  m_InterpolateMovement: 1
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 1
+  SyncScaleX: 1
+  SyncScaleY: 1
+  SyncScaleZ: 1
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  InLocalSpace: 1
+  Interpolate: 1
 --- !u!1 &7824940784875316998
 GameObject:
   m_ObjectHideFlags: 0
