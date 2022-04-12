@@ -6,16 +6,13 @@ using Unity.Netcode;
 public class Respawn : NetworkBehaviour
 {
     public int Life = 10;
-    PlayerController Player;
-    Transform SpawnPoint01;
-    Transform SpawnPoint02;
-
     CharacterController cc;
+    MenuScripts Canvas;
 
     private void Start()
     {
-        Player = GetComponent<PlayerController>();
         cc = GetComponent<CharacterController>();
+        Canvas = GameObject.Find("Canvas").GetComponent<MenuScripts>();
     }
 
     public void Respawning()
@@ -45,6 +42,7 @@ public class Respawn : NetworkBehaviour
             }
             else if (Life == 0)
             {
+                Canvas.Lost.SetActive(true);
                 Destroy(this.gameObject);
             }
         }

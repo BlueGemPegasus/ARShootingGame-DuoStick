@@ -67,7 +67,7 @@ public class PlaceArena : NetworkBehaviour
                 }
                 else if (!IsHost)
                 {
-                    _arPlaneManager.enabled = !_arPlaneManager.enabled;
+                    _arPlaneManager.enabled = false ;
                     _btnPlaceArena.GetComponentInChildren<Text>().text = "Please Wait...";
                 }
             }

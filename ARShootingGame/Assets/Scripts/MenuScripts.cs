@@ -14,6 +14,16 @@ public class MenuScripts : MonoBehaviour
 
     public PlaceArena ArenaScript;
 
+    public GameObject Lost;
+    public GameObject Won;
+
+    private void Awake()
+    {
+        Won = GameObject.Find("Panel_Won!");
+        Lost = GameObject.Find("Panel_Lose!");
+        Lost.SetActive(false);
+        Won.SetActive(false);
+    }
     private void Start()
     {
         ArenaScript = GameObject.Find("AR Session Origin").GetComponent<PlaceArena>();

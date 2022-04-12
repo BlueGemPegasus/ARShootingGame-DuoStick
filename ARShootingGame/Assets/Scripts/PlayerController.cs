@@ -34,12 +34,11 @@ public class PlayerController : NetworkBehaviour
     public Text text_KillCount;
     public int score = 0;
     public ulong clientId;
-
+    MenuScripts Canvas;
 
     private void Awake()
     {
         playerInput = new PlayerInput();
-        
 
         //GetComponent<Renderer>().material.color = playerColor;
         //text_Name.text = playerName;
@@ -50,6 +49,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsLocalPlayer)
         {
+            Canvas = GameObject.Find("Canvas").GetComponent<MenuScripts>();
             controller = GetComponent<CharacterController>();
             AimLine = GetComponent<LineRenderer>();
             AimLine.enabled = false;
@@ -87,7 +87,7 @@ public class PlayerController : NetworkBehaviour
 
             if (score == 10)
             {
-                // End of Game
+                Canvas.Won.SetActive(true);
             }
         }
         //Debug.DrawRay(firePoint.position, transform.forward * 50, Color.blue) ;
