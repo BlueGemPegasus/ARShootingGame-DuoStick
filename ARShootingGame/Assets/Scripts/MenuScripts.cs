@@ -4,7 +4,6 @@ using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.UI;
 
-
 public class MenuScripts : MonoBehaviour
 {
     public GameObject menuPanel;
@@ -16,6 +15,8 @@ public class MenuScripts : MonoBehaviour
 
     public GameObject Lost;
     public GameObject Won;
+
+    NetworkTransport transport;
 
     private void Awake()
     {
@@ -56,9 +57,9 @@ public class MenuScripts : MonoBehaviour
         if (Input_Name.text != null || Input_Name.text != " " )
         {
             PlayerPrefs.SetString("PlayerName", Input_Name.ToString());
-            NetworkManager.Singleton.StartClient();
             menuPanel.SetActive(false);
             ArenaScript.GetRespond = true;
+            NetworkManager.Singleton.StartClient();
         }
         else
         {

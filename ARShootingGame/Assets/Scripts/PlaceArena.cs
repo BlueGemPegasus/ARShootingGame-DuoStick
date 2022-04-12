@@ -27,7 +27,8 @@ public class PlaceArena : NetworkBehaviour
     public GameObject JoySticks;
 
     // If Arena is placed, this set to true, GhostArena will be hidden from sight, so is Plane Scanner
-    bool ArenaPlaced = false;
+    public NetworkVariable<bool> ArenaPlaced = new NetworkVariable<bool>(false);
+    public bool ArenaPlacedByHost = false;
 
     // Networking Stuff
     private ulong clientId;
@@ -56,9 +57,12 @@ public class PlaceArena : NetworkBehaviour
 
     private void Update()
     {
+        if(!Spawned)
+            ArenaPlacedByHost = ArenaPlaced.Value;
+
         if (GetRespond == true)
         {
-            if (!ArenaPlaced)
+            if (!ArenaPlacedByHost)
             {
                 if (IsHost)
                 {
@@ -71,16 +75,16 @@ public class PlaceArena : NetworkBehaviour
                     _btnPlaceArena.GetComponentInChildren<Text>().text = "Please Wait...";
                 }
             }
-            else if (ArenaPlaced && Spawned)
+            else if (ArenaPlacedByHost && Spawned)
             {
                 return;
             }
-            else if (ArenaPlaced)
+            else if (ArenaPlacedByHost)
             {
                 JoySticks.SetActive(true);
                 _btnPlaceArena.SetActive(false);
                 if (Spawned == false)
-                InitiateGettingClientAndSpawning();
+                    InitiateGettingClientAndSpawning();
             }
         }
 
@@ -145,9 +149,8 @@ public class PlaceArena : NetworkBehaviour
     // Or maybe, try to do : " Only the Arena placed, other player can join the lan-server etcs "
     public void PlacingArena()
     {
-        ArenaPlaced = true;
-        GameObject NewArena = Instantiate(Arena, GhostArena.transform.position, GhostArena.transform.rotation);
-        NewArena.GetComponent<NetworkObject>().Spawn();
+        ArenaPlaced.Value = true;
+        PlaceServerRPC();
         GhostArena.SetActive(false);
         foreach (var plane in _arPlaneManager.trackables)
         {
@@ -157,5 +160,18 @@ public class PlaceArena : NetworkBehaviour
 
         // After placing the Arena, begin getting ID, and spawning character on the Arena's Spawnpoint.
         
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void PlaceServerRPC()
+    {
+        PlaceClientRPC();
+    }
+
+    [ClientRpc]
+    private void PlaceClientRPC()
+    {
+        GameObject NewArena = Instantiate(Arena, GhostArena.transform.position, GhostArena.transform.rotation);
+        NewArena.GetComponent<NetworkObject>().Spawn();
     }
 }
