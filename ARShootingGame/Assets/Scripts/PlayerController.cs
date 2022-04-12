@@ -6,6 +6,7 @@ using Unity.Netcode;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
 
+[RequireComponent(typeof(CharacterController))]
 public class PlayerController : NetworkBehaviour
 {
     public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>();
@@ -26,6 +27,7 @@ public class PlayerController : NetworkBehaviour
     // Player Aim and Shoot
     public GameObject bulletPrefab;
     public Transform firePoint;
+    LineRenderer AimLine;
 
     // Player's Information
     public Text text_Name;
@@ -35,12 +37,23 @@ public class PlayerController : NetworkBehaviour
     private void Awake()
     {
         playerInput = new PlayerInput();
-
-        controller = GetComponent<CharacterController>();
+        
 
         //GetComponent<Renderer>().material.color = playerColor;
         //text_Name.text = playerName;
-        
+
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        if (IsLocalPlayer)
+        {
+            controller = GetComponent<CharacterController>();
+            AimLine = GetComponent<LineRenderer>();
+
+            AimLine.enabled = false;
+            
+        }
     }
 
     private void OnEnable()
@@ -56,62 +69,88 @@ public class PlayerController : NetworkBehaviour
 
     void Update()
     {
-        if (!IsLocalPlayer)
-            return;
-        
-        Movement();
-        Aiming();
-            
+        if (IsLocalPlayer)
+        {
+            Movement();
+            Aiming();
+            AimLine.enabled = true;
+            Physics.Raycast(firePoint.position, firePoint.forward * 50, out RaycastHit AimHit, 50f);
+            AimLine.SetPosition(0, firePoint.position);
+            if(AimHit.collider)
+            {
+                AimLine.SetPosition(1, AimHit.point);
+            }
+        }
+        //Debug.DrawRay(firePoint.position, transform.forward * 50, Color.blue) ;
     }
 
     void Movement()
     {
-        transform.position = Position.Value;
-        groundedPlayer = controller.isGrounded;
-        if (groundedPlayer && playerVelocity.y < 0)
+        if (IsLocalPlayer)
         {
-            playerVelocity.y = 0f;
-        }
+            transform.position = Position.Value;
+            groundedPlayer = controller.isGrounded;
+            if (groundedPlayer && playerVelocity.y < 0)
+            {
+                playerVelocity.y = 0f;
+            }
 
-        // Get the Vector2 from Left Joystick, and pass it to the player function.
-        Vector2 movementInput = playerInput.Player.Movement.ReadValue<Vector2>();
-        Vector3 move = new Vector3(movementInput.x, 0f, movementInput.y);
-        controller.Move(move * Time.deltaTime * playerSpeed);
+            // Get the Vector2 from Left Joystick, and pass it to the player function. 
+            Vector2 movementInput = playerInput.Player.Movement.ReadValue<Vector2>();
+            Vector3 move = new Vector3(movementInput.x, 0f, movementInput.y);
+            controller.Move(move * Time.deltaTime * playerSpeed);
+            if (move != Vector3.zero)
+            {
+                gameObject.transform.forward = move; 
+            }
 
-        if (move != Vector3.zero)
-        {
-            gameObject.transform.forward = move; 
-        }
-
-        playerVelocity.y += gravityValue * Time.deltaTime;
-        controller.Move(playerVelocity * Time.deltaTime);
+            playerVelocity.y += gravityValue * Time.deltaTime;
+            controller.Move(playerVelocity * Time.deltaTime);
+            }
     }
 
     void Aiming()
     {
-        Vector2 RightJoystick = playerInput.Player.Aim.ReadValue<Vector2>();
-        if (Mathf.Abs(RightJoystick.x) > cDZ || Mathf.Abs(RightJoystick.y) > cDZ)
+        if (IsLocalPlayer)
         {
-            Vector3 aim = Vector3.right * RightJoystick.x + Vector3.forward * RightJoystick.y;
-            if (aim.sqrMagnitude > 0.0f)
+            Vector2 RightJoystick = playerInput.Player.Aim.ReadValue<Vector2>();
+            if (Mathf.Abs(RightJoystick.x) > cDZ || Mathf.Abs(RightJoystick.y) > cDZ)
             {
-                Quaternion newrotation = Quaternion.LookRotation(aim, Vector3.up);
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, newrotation, 1000f * Time.deltaTime * rotateSpeed);
+                Vector3 aim = Vector3.right * RightJoystick.x + Vector3.forward * RightJoystick.y;
+                if (aim.sqrMagnitude > 0.0f)
+                {
+                    Quaternion newrotation = Quaternion.LookRotation(aim, Vector3.up);
+                    transform.rotation = Quaternion.RotateTowards(transform.rotation, newrotation, 1000f * Time.deltaTime * rotateSpeed);
+                }
             }
         }
     }
 
-    [ServerRpc (RequireOwnership = false)]
+    //public void Shooting(InputAction.CallbackContext obj)
+    //{
+    //    if (IsLocalPlayer)
+    //    {
+    //        GameObject BulletShoot = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+    //        BulletShoot.GetComponent<NetworkObject>().Spawn();
+    //        // Please take note that, this only allow THE SERVER spawn the object. Which is not suitable for this game.
+    //    }
+
+    //}
+
+    [ServerRpc(RequireOwnership = false)]
     private void ShootServerRPC(InputAction.CallbackContext obj)
     {
-        if (IsLocalPlayer)
-            ShootClientRPC();
+        ShootClientRPC();
     }
 
     [ClientRpc]
     private void ShootClientRPC()
-    {
-        GameObject BulletShoot = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+    {       
+        var BulletShoot = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+        if (Physics.Raycast(firePoint.position, firePoint.forward * 50, out RaycastHit AimHit, 50f))
+        {
+            BulletShoot.transform.position = AimHit.point;
+        }
     }
 
 }

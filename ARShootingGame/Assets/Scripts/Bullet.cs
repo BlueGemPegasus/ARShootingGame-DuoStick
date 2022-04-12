@@ -11,7 +11,7 @@ public class Bullet : MonoBehaviour
 
     private void Start()
     {
-        rb.velocity = transform.forward * BulletSpeed;
+        rb.velocity = transform.forward * BulletSpeed * 0.00001f;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -19,8 +19,13 @@ public class Bullet : MonoBehaviour
         Respawn _respawn = collision.gameObject.GetComponent<Respawn>();
         if (_respawn != null)
         {
-            
+            Debug.Log("HIT PLAYER!");
+            Destroy(this.gameObject);
         }
-        Destroy(this.gameObject);
+        if (collision.gameObject.CompareTag("Arena"))
+        {
+            Debug.Log("HIT ARENA!");
+            Destroy(this.gameObject);
+        }
     }
 }
