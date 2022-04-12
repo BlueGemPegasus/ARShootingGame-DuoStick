@@ -982,6 +982,7 @@ MonoBehaviour:
   Input_Name: {fileID: 1881933383}
   Input_PlaceHolder: {fileID: 1685328460}
   PlayerName: 
+  ArenaScript: {fileID: 1087240199}
 --- !u!1 &1087240196
 GameObject:
   m_ObjectHideFlags: 0
@@ -995,6 +996,7 @@ GameObject:
   - component: {fileID: 1087240201}
   - component: {fileID: 1087240200}
   - component: {fileID: 1087240199}
+  - component: {fileID: 1087240202}
   m_Layer: 0
   m_Name: AR Session Origin
   m_TagString: Untagged
@@ -1048,6 +1050,7 @@ MonoBehaviour:
   JoySticks: {fileID: 0}
   PlayerPrefab: {fileID: 7824940783808175754, guid: 34083a7c181f8e94b91c257559cd193d,
     type: 3}
+  GetRespond: 0
 --- !u!114 &1087240200
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1076,6 +1079,22 @@ MonoBehaviour:
   m_PlanePrefab: {fileID: 8928987519503312345, guid: 6329acfce0568f54fba10af0101a8c00,
     type: 3}
   m_DetectionMode: -1
+--- !u!114 &1087240202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1087240196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 165532217
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &1234160379
 GameObject:
   m_ObjectHideFlags: 0

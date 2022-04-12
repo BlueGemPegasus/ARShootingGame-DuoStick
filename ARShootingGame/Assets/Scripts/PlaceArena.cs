@@ -33,6 +33,7 @@ public class PlaceArena : NetworkBehaviour
     private ulong clientId;
     public GameObject PlayerPrefab;
     bool Spawned = false;
+    public bool GetRespond = false;
 
     private void Awake()
     {
@@ -50,38 +51,37 @@ public class PlaceArena : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        if (!IsHost)
-        {
-            _arPlaneManager.enabled = !_arPlaneManager.enabled;
-        }
-
         clientId = NetworkManager.Singleton.LocalClientId;
     }
 
     private void Update()
     {
-        if (!ArenaPlaced)
+        if (GetRespond == true)
         {
-            if (IsHost)
+            if (!ArenaPlaced)
             {
-                UpdatePlacementIndicator();
-                UpdatePlacementPose();
+                if (IsHost)
+                {
+                    UpdatePlacementIndicator();
+                    UpdatePlacementPose();
+                }
+                else if (!IsHost)
+                {
+                    _arPlaneManager.enabled = !_arPlaneManager.enabled;
+                    _btnPlaceArena.GetComponentInChildren<Text>().text = "Please Wait...";
+                }
             }
-            else if (!IsHost)
+            else if (ArenaPlaced && Spawned)
             {
-                _btnPlaceArena.GetComponentInChildren<Text>().text = "Please Wait...";
+                return;
             }
-        }
-        else if (ArenaPlaced && Spawned)
-        {
-            return;
-        }
-        else if (ArenaPlaced)
-        {
-            JoySticks.SetActive(true);
-            _btnPlaceArena.SetActive(false);
-            if (Spawned == false)
+            else if (ArenaPlaced)
+            {
+                JoySticks.SetActive(true);
+                _btnPlaceArena.SetActive(false);
+                if (Spawned == false)
                 InitiateGettingClientAndSpawning();
+            }
         }
 
     }

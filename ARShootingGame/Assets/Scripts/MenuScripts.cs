@@ -12,8 +12,12 @@ public class MenuScripts : MonoBehaviour
     public Text Input_PlaceHolder;
     [SerializeField] string PlayerName;
 
+    public PlaceArena ArenaScript;
+
     private void Start()
     {
+        ArenaScript = GameObject.Find("AR Session Origin").GetComponent<PlaceArena>();
+
         PlayerName = PlayerPrefs.GetString("PlayerName");
         if (PlayerName != null || PlayerName != "")
         {
@@ -29,6 +33,7 @@ public class MenuScripts : MonoBehaviour
             PlayerPrefs.SetString("PlayerName", Input_Name.ToString());
             NetworkManager.Singleton.StartHost();
             menuPanel.SetActive(false);
+            ArenaScript.GetRespond = true;
         }
         else
         {
@@ -43,6 +48,7 @@ public class MenuScripts : MonoBehaviour
             PlayerPrefs.SetString("PlayerName", Input_Name.ToString());
             NetworkManager.Singleton.StartClient();
             menuPanel.SetActive(false);
+            ArenaScript.GetRespond = true;
         }
         else
         {
